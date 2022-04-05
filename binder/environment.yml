@@ -1,0 +1,28 @@
+name: ipyrad
+channels: 
+  - conda-forge
+  - bioconda
+dependencies:
+  - python>=3.7
+  - ipython
+  - jupyter
+  - pydantic
+  - loguru
+  - requests
+  - h5py
+  - toyplot
+  - toytree
+  - pandas
+  - scipy
+  - numpy
+  - numba
+  - ipyparallel >=7.0
+
+  - pysam >=0.15
+  - vsearch >=2.13
+  - bedtools
+  - muscle
+  - fastp
+  - bwa
+  - samtools
+  - zlib

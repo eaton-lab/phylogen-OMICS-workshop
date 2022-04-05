@@ -1,0 +1,1068 @@
+
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="author" content="Deren Eaton">
+  <meta name="description" content="Programming Course">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lecture-10.0</title>
+
+  <!-- CSS styling -->
+  <link rel="stylesheet" href="./assets/reveal.js/dist/reveal.css">
+  <link rel="stylesheet" href="./assets/reveal.js/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./custom.css">
+</head>
+
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <section class="present">
+        <div class="title_slide">
+          <h2 id="title">phylogen-OMICS workshop</h2>
+          <h4 id="subtitle">Phylogenomics using ipyrad and the ipyrad-analysis toolkit</h4>
+          <h4 id="subtitle" style="color:#d8b365">Deren Eaton, Columbia University</h4>
+        </div>
+      </section>
+
+      <section data-background-color="#262626" data-transition="none" class="future">
+          <div class="standard">
+          <h3 class="title" style="color:#5ab4ac; margin-top:20%; line-height:1.2">
+          How can we most accurately reconstruct the <br><i>evolutionary history</i> of organisms from their genomes?
+          </h3>
+          </div>
+      </section>
+
+      <section data-background-color="#262626" data-transition="none" class="future">
+          <div class="standard">
+          <h3 class="title" style="color:#d8b365; margin-top:20%; line-height:1.2">
+          How can genomics (i.e., evolutionary inference) <br>
+          be used to reconstruct historical <br>
+          <i>ecological interactions</i> among species?
+          </h3>
+          </div>
+      </section>
+
+      <section class="future" data-transition="none" data-background-color="white">
+          <div style="margin-left: auto; margin-top: 0%">
+          <h2> Software development</h2>
+          <img src="./images/software-summary.svg" style="width:60%">
+          </div>
+      </section>
+
+      <!-- --------------------------- -->
+      <!-- PART I: INtro to rAD        -->
+      <!-- --------------------------- -->      
+      <section>
+        <section class="future">        
+          <div class="standard10 text-center">
+            <h2 id="title">Workshop presentation outline</h2>
+            <br>
+            <ul class="bullets">
+              <li><span style="font-weight: 600">When and why to use RAD-seq?</span></li>
+              <li>Viburnum (empirical example)</li>
+              <li>ipyrad assembly (brief) walkthrough</li>
+              <li>ipyrad-analysis and ipcoal</li>
+              <li>SNPs, gene trees, and phylogenomics</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+          <div class="standard">
+            <h3> Phylogenomic sampling </h3>
+            <br>
+            <div class="textbox"><p style='text-align:center; color: black'>
+            <!-- It's an exciting time to be asking these questions! Genomic technologies have <i>revolutionized</i> the study of ecology and evolution. -->
+            Characterize evolutionary history from <i>a subset</i> of sampled genomes (individuals). 
+            </p></div>
+            <br>
+            <img src="./images/intro-phylogenomic-sampling.svg" style="width:70%">
+          </div>
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+            <img src="./images/1KPG.png" style="width:45%">
+            <br>
+            <img src="./images/1KPG-tree.png" style="width:45%">
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+            <img src="./images/Spriggs.svg" style="width:70%">
+        </section>
+
+
+        <section class="future" data-transition="none" data-background-color="white">
+          <div class="standard">
+              <h3> Phylogenomic sampling </h3>
+              <br>
+              <div class="textbox"><p style="text-align:center; color: black">
+                   Characterize whole genomes from <i> a subset</i> of sequenced markers.
+              <!-- In addition to the increased raw output of genome data, molecular preparation methods allow us to more efficiently sample the genome for <i> comparative studies</i>. -->
+              </p></div>   
+              <br>            
+              <img src="./images/intro-RAD-diagram.svg" style="width:70%">
+          </div>
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+          <div class="standard">
+            <h3> Genealogical variation </h3>
+            <br>
+            <div class="textbox"><p style="text-align:center; color:black">
+                It is important to examine evolutionary history across the entire genome. 
+            </p></div>
+            <img src="./images/intro-tree-outlines-ARG-1.svg" style="width:70%">
+          </div>
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+          <div class="standard">
+            <h3> Spatial genealogical variation </h3>
+            <br>
+            <div class="textbox"><p style="text-align:center; color:black">
+                It is important to examine evolutionary history across the entire genome. 
+            </p></div>
+            <img src="./images/intro-tree-outlines-ARG-2.svg" style="width:70%">
+          </div>
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+          <div class="standard">
+            <h3> Historical introgression/admixture </h3>
+            <br>
+            <div class="textbox"><p style="text-align:center; color:black">
+                It is important to examine evolutionary history across the entire genome. 
+            </p></div>
+            <img src="./images/intro-tree-outlines-2.svg" style="width:70%">
+          </div>
+        </section>
+
+        <!-- The Niche for RAD-seq (many samples, divergence medium, diversity poorly known) -->
+
+        <section class="future" data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h3> The <i>Niche</i> for RAD-seq</h3>
+              <br>
+              <div class="textbox"><p style="text-align:center; color:darkcyan;">
+                  When/why use <i>RAD-seq</i> versus <i>WGS</i>, <i>hyb-seq</i>, <i>transcriptomes</i>, etc.?
+              </p></div>
+              <br>
+
+              <div class="textbox"><p style="text-align:center; color:black">
+                  - Large genome sizes (high cost for WGS)
+              </p></div>
+
+              <div class="textbox"><p style="text-align:center; color:black">
+                  - Shallow divergences (insufficient variation in hyb-seq)
+              </p></div>
+
+              <div class="textbox"><p style="text-align:center; color:black">
+                  - Variable divergences (poor ability to impute WGS)
+              </p></div>
+
+              <div class="textbox"><p style="text-align:center; color:black">
+                  - Large sample sizes (RAD can be very affordable)
+              </p></div>
+            </div>
+        </section>
+
+
+        <section class="future" data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h3> Challenges for RAD-seq</h3>
+              <br>
+              <div class="textbox"><p style="text-align:center; color:darkorange;">
+                  When/why to use alternative methods:
+              </p></div>
+              <br>
+
+              <div class="textbox"><p style="text-align:center; color:black">
+                  - RAD fragments contribute little to genomic databases
+              </p></div>
+
+              <div class="textbox"><p style="text-align:center; color:black">
+                  - high missing data (or wasteful cost) for deep divergences
+              </p></div>
+
+              <div class="textbox"><p style="text-align:center; color:black">
+                  - wetlab prep <i>can</i> be very cheap, but involves troubleshooting
+              </p></div>
+
+              <div class="textbox"><p style="text-align:center; color:black">
+                  - Homology/Paralogy assessment is difficult
+              </p></div>
+            </div>
+        </section>        
+      </section>
+
+
+      <!-- --------------------------- -->
+      <!-- PART II: Examples           -->
+      <!-- --------------------------- -->
+
+      <section>
+        <section class="future">        
+          <div class="standard10 text-center">
+            <h2 id="title">Workshop presentation outline</h2>
+            <br>
+            <ul class="bullets">
+              <li>When and why to use RAD-seq?</li>
+              <li><span style="font-weight: 600">Viburnum (empirical example)</span></li>
+              <li>ipyrad assembly (brief) walkthrough</li>
+              <li>ipyrad-analysis and ipcoal</li>
+              <li>SNPs, gene trees, and phylogenomics</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+            <div class="standard">
+            <h3> Viburnum (Adoxaceae, Dipsacales) genomics</h3>
+            <div class="textbox"><p style="text-align:center; color:black; font-size:0.8em">
+                ~165 species of shrubs and small trees; variable leaf morphologies;
+                broad geographic distribution. 
+                Genome sizes are large (>4Gb); we are interested in both 
+                shallow and deep inferences.<br>
+                <span style="font-weight: 400; color:darkcyan"> Fitting for RAD-seq!</span>
+            </p></div>
+            <br>
+            <img src="./images/Viburnum-sampling.svg" style="width:60%">
+            </div>
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+            <div class="standard">
+            <h3> Viburnum (Adoxaceae, Dipsacales) genomics</h3>
+            <img src="./images/Viburnum-papers.png" style="width:50%">
+            </div>
+        </section>      
+
+        <section class="future" data-transition="none" data-background-color="white">
+            <div class="standard">
+            <h4> Viburnum deep-scale RAD phylogeny (>60 Ma)</h4>
+              <div class="textbox">
+                <p style="text-align:center; color:black; font-size: 0.75em">
+                Light blue: recent rapid radiation in neotropical cloud forests</p>
+              </div>
+            <img src="./images/Landis-tree.png" style="width:30%">
+            </div> 
+            <span style="font-size: 0.6em; color: black">17Mb alignment (3.2M SNPs, 78% missing); Eaton et al. (2017); Landis et al. (2021)</span>
+        </section>
+
+        <section data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h4> Parallel leaf forms</h4>
+              <img src="./images/Viburnum-Orieno-1.svg" style="width:70%;">
+              <br>
+              <span style="font-size: 0.6em; color: black">Eaton et al. (2017);</span>
+            </div>
+        </section>
+
+        <section data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h4> Phylogenetic hypotheses</h4>
+              <img src="./images/Viburnum-Orieno-2.svg" style="width:70%;">
+              <br>
+              <span style="font-size: 0.6em; color: black">Eaton et al. (2017);</span>
+            </div>
+        </section>        
+
+        <section data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h4> Replicated radiation across a cloud forest archipelago</h4>
+              <div class="textbox">
+                <p style="text-align:center; color:black; font-size: 0.75em">
+                Parallel evolution of similar leaf morphs (<i>ecomorphs sensu Anolis</i>)</p>
+              </div>
+              <img src="./images/Oreinotinus-manuscript-Fig-3.png" style="width:50%;">
+              <br>
+              <span style="font-size: 0.6em; color: black">Eaton et al. (2017); Donoghue et al. (in review)</span>
+            </div>
+        </section>
+
+        <section data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h4> Replicated radiation across a cloud forest archipelago</h4>
+              <div class="textbox">
+                <p style="text-align:center; color:black; font-size: 0.75em">
+                RAD-seq: >600 samples from 40 species (<10 Ma); geographic variation and hybrid zones</p>
+              </div>
+              <img src="./images/Oreinotinus-manuscript-Fig-1.png" style="width:50%;">
+              <br>
+              <span style="font-size: 0.6em; color: black">Donoghue et al. (in review)</span>
+            </div>
+        </section>
+
+        <section data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h4> Replicated radiation across a cloud forest archipelago</h4>
+              <div class="textbox">
+                <p style="text-align:center; color:black; font-size: 0.75em">
+                  Only one instance of gene flow between neighboring regions.<br>
+                  Species did not evolve parallel leaf morphs by introgression.</p>
+              </div>
+              <br>
+              <img src="./images/Oreinotinus-manuscript-Fig-4-A.svg" style="width:75%;">
+              <br>
+              <span style="font-size: 0.6em; color: black">Mean 131K SNPs per test, ~3% discordant; Donoghue et al. (in review)</span>
+            </div>
+        </section>
+
+        <section data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h4> Replicated radiation across a cloud forest archipelago</h4>
+              <div class="textbox">
+                <p style="text-align:center; color:black; font-size: 0.75em">
+                  What if the phylogeny is wrong and species with similar leaf 
+                  morphs are actually sister?<br> 
+                  This would require excessive introgression within regions, 
+                  which we do not observe.</p>
+              </div>
+              <br>
+              <img src="./images/Oreinotinus-manuscript-Fig-4-B.svg" style="width:75%;">
+              <br>
+              <span style="font-size: 0.6em; color: black">Mean 131K SNPs per test, ~3% discordant; Donoghue et al. (in review)</span>
+            </div>
+        </section>
+
+        <section data-transition="none" data-background-color="white">
+            <div class="standard">
+              <h4> Replicated radiation across a cloud forest archipelago</h4>
+              <div class="textbox">
+                <p style="text-align:center; color:black; font-size: 0.75em">
+                  We can validate lack of gene flow within regions 
+                  because we have many samples of each species.<br> 
+                  Some hybrids are associated with human disturbance.</p>
+              </div>
+              <br>
+              <img src="./images/Oreinotinus-manuscript-Fig-4-C.svg" style="width:75%;">
+              <br>
+              <span style="font-size: 0.6em; color: black">Mean 131K SNPs per test, ~3% discordant; Donoghue et al. (in review)</span>
+            </div>
+        </section>
+
+        <section class="future" data-transition="none" data-background-color="white">
+            <div class="standard">
+            <h4> Conclusion: RAD-seq from global to local scales</h4>
+            <div class="textbox"><p style="text-align:center; color:black; font-size: 0.8em">
+                Analyses of >1000 RAD-seq samples across ~165 species of Viburnum.
+            </p></div>
+            <br>
+            <img src="./images/Viburnum-sampling.svg" style="width:60%">
+            </div>
+        </section>        
+      </section>        
+
+      <!-- --------------------------- -->
+      <!-- PART III: ipyrad assembly walk-through  -->
+      <!-- --------------------------- -->
+
+      <section>        
+        <section class="future">        
+          <div class="standard10 text-center">
+            <h2 id="title">Workshop presentation outline</h2>
+            <br>
+            <ul class="bullets">
+              <li>When and why to use RAD-seq?</li>
+              <li>Viburnum (empirical example)</li>
+              <li><span style="font-weight: 600">ipyrad assembly (brief) walkthrough</span></li>
+              <li>ipyrad-analysis and ipcoal</li>
+              <li>SNPs, gene trees, and phylogenomics</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Easy to install, easy to use</h3>
+            <div class="mx-auto"><p>
+              The ipyrad command line tool (CLI) for RAD-seq data assembly
+            </p></div>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              # conda installer instructions
+              conda install ipyrad -c conda-forge -c bioconda
+
+              # call the ipyrad help menu
+              ipyrad -h
+            </code></pre>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem;"><code class="text" data-trim style="background-color:#330033; max-height: 300px;">
+              usage: ipyrad [-h] [-v] [-r] [-f] [-q] [-d] [-n NEW] [-p PARAMS] [-s STEPS] [-b [BRANCH ...]] [-m [MERGE ...]]
+                            [-c cores] [-t threading] [--MPI] [--ipcluster [IPCLUSTER]] [--download [DOWNLOAD ...]]
+
+              optional arguments:
+                -h, --help            show this help message and exit
+                -v, --version         show program's version number and exit
+                -r, --results         show results summary for Assembly in params.txt and exit
+                -f, --force           force overwrite of existing data
+                -q, --quiet           do not print to stderror or stdout.
+                -d, --debug           print lots more info to ipyrad_log.txt.
+                -n NEW                create new file 'params-{new}.txt' in current directory
+                -p PARAMS             path to params file for Assembly: params-{assembly_name}.txt
+                -s STEPS              Set of assembly steps to run, e.g., -s 123
+                -b [BRANCH ...]       create new branch of Assembly as params-{branch}.txt, and can be used to drop samples from
+                                      Assembly.
+                -m [MERGE ...]        merge multiple Assemblies into one joint Assembly, and can be used to merge Samples into one
+                                      Sample.
+                -c cores              number of CPU cores to use (Default=0=All)
+                -t threading          tune threading of multi-threaded binaries (Default=2)
+                --MPI                 connect to parallel CPUs across multiple nodes
+                --ipcluster [IPCLUSTER]
+                                      connect to running ipcluster, enter profile name or profile='default'
+                --download [DOWNLOAD ...]
+                                      download fastq files by accession (e.g., SRP or SRR)
+
+                * Example command-line usage: 
+                  ipyrad -n data                       ## create new file called params-data.txt 
+                  ipyrad -p params-data.txt -s 123     ## run only steps 1-3 of assembly.
+                  ipyrad -p params-data.txt -s 3 -f    ## run step 3, overwrite existing data.
+
+                * HPC parallelization across 32 cores
+                  ipyrad -p params-data.txt -s 3 -c 32 --MPI
+
+                * Print results summary 
+                  ipyrad -p params-data.txt -r 
+
+                * Branch/Merging Assemblies
+                  ipyrad -p params-data.txt -b newdata  
+                  ipyrad -m newdata params-1.txt params-2.txt [params-3.txt, ...]
+
+                * Subsample taxa during branching
+                  ipyrad -p params-data.txt -b newdata taxaKeepList.txt
+
+                * Download sequence data from SRA into directory 'sra-fastqs/' 
+                  ipyrad --download SRP021469 sra-fastqs/ 
+
+                * Documentation: http://ipyrad.readthedocs.io
+            </code></pre>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Starting an assembly</h3>
+            <div class="mx-auto"><p>
+              Create an empty params file by providing a name
+            </p></div>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              # initialize a named Assembly
+              ipyrad -n test
+            </code></pre>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem;"><code class="text" data-trim style="background-color:#330033; max-height: 300px;">
+              New file 'params-test.txt' created in /tmp
+            </code></pre>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Enter data paths and settings to params file</h3>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              # view and/or edit the params file
+              cat params-test.txt
+            </code></pre>
+
+            <pre class="mx-sm-auto" style="font-size: 1.1rem;"><code class="text" data-trim style="background-color:#330033; max-height: 500px;" data-line-numbers="|2|3|4-5|6|7-8|9|10|11-31">
+              ------- ipyrad params file (v.0.9.84)-------------------------------------------
+              test                           ## [0] [assembly_name]: Assembly name. Used to name output directories for assembly steps
+              /tmp                           ## [1] [project_dir]: Project dir (made in curdir if not present)
+              /path-to-data/*.fastq.gz            ## [2] [raw_fastq_path]: Location of raw non-demultiplexed fastq files
+              /path-to-data/barcodes.csv          ## [3] [barcodes_path]: Location of barcodes file
+                                             ## [4] [sorted_fastq_path]: Location of demultiplexed/sorted fastq files
+              denovo                         ## [5] [assembly_method]: Assembly method (denovo, reference)
+                                             ## [6] [reference_sequence]: Location of reference sequence file
+              rad                            ## [7] [datatype]: Datatype (see docs): rad, gbs, ddrad, etc.
+              TGCAG,                         ## [8] [restriction_overhang]: Restriction overhang (cut1,) or (cut1, cut2)
+              5                              ## [9] [max_low_qual_bases]: Max low quality base calls (Q<20) in a read
+              33                             ## [10] [phred_Qscore_offset]: phred Q score offset (33 is default and very standard)
+              6                              ## [11] [mindepth_statistical]: Min depth for statistical base calling
+              6                              ## [12] [mindepth_majrule]: Min depth for majority-rule base calling
+              10000                          ## [13] [maxdepth]: Max cluster depth within samples
+              0.85                           ## [14] [clust_threshold]: Clustering threshold for de novo assembly
+              0                              ## [15] [max_barcode_mismatch]: Max number of allowable mismatches in barcodes
+              2                              ## [16] [filter_adapters]: Filter for adapters/primers (1 or 2=stricter)
+              35                             ## [17] [filter_min_trim_len]: Min length of reads after adapter trim
+              2                              ## [18] [max_alleles_consens]: Max alleles per site in consensus sequences
+              0.05                           ## [19] [max_Ns_consens]: Max N's (uncalled bases) in consensus
+              0.05                           ## [20] [max_Hs_consens]: Max Hs (heterozygotes) in consensus
+              4                              ## [21] [min_samples_locus]: Min # samples per locus for output
+              0.2                            ## [22] [max_SNPs_locus]: Max # SNPs per locus
+              8                              ## [23] [max_Indels_locus]: Max # of indels per locus
+              0.5                            ## [24] [max_shared_Hs_locus]: Max # heterozygous sites per locus
+              0, 0, 0, 0                     ## [25] [trim_reads]: Trim raw read edges (R1, R1, R2, R2) (see docs)
+              0, 0, 0, 0                     ## [26] [trim_loci]: Trim locus edges (see docs) (R1, R1, R2, R2)
+              p, s, l                        ## [27] [output_formats]: Output formats (see docs)
+                                             ## [28] [pop_assign_file]: Path to population assignment file
+                                             ## [29] [reference_as_filter]: Reads mapped to this reference are removed in step 3
+            </code></pre>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Seven assembly steps</h3>
+            <div class="mx-auto"><p>
+              Run steps individually and examine results, or start all at once.
+            </p></div>
+            <img src="./images/ipyrad_partI_CLI_ipyrad_workflow.png" style="width:90%">
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Step 1: load sample fastqs, or demultiplex</h3>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              # run step 1 for Assembly: test
+              ipyrad -p params-test.txt -s 1 
+
+              # print results summary to stdout
+              ipyrad -p params-test.txt -r 
+            </code></pre>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem;"><code class="text" data-trim style="background-color:#330033; max-height: 350px;">
+               -------------------------------------------------------------
+                ipyrad [v.0.9.84]
+                Interactive assembly and analysis of RAD-seq data
+               ------------------------------------------------------------- 
+                Parallel connection | tuba: 8 cores
+                
+                Step 1: Demultiplexing fastq data to Samples
+                [####################] 100% 0:00:02 | sorting reads          
+                [####################] 100% 0:00:00 | writing/compressing    
+                Parallel connection closed.
+              
+              Summary stats of Assembly test
+              ------------------------------------------------
+                    state  reads_raw
+              1A_0      1      39724
+              1B_0      1      40086
+              1C_0      1      40272
+              1D_0      1      39932
+              2E_0      1      40034
+              2F_0      1      39866
+              2G_0      1      40060
+              2H_0      1      40398
+              3I_0      1      39770
+              3J_0      1      39644
+              3K_0      1      39930
+              3L_0      1      40016
+
+
+              Full stats files
+              ------------------------------------------------
+              step 1: /tmp/test_fastqs/s1_demultiplex_stats.txt
+              step 2: None
+              step 3: None
+              step 4: None
+              step 5: None
+              step 6: None
+              step 7: None
+            </code></pre>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Steps 1-7: running sequential steps</h3>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              # run steps 2 & 3, and print results summary to stdout
+              ipyrad -p params-test.txt -s 23 -r
+            </code></pre>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem;"><code class="text" data-trim style="background-color:#330033; max-height: 350px;">
+                 -------------------------------------------------------------
+                  ipyrad [v.0.9.84]
+                  Interactive assembly and analysis of RAD-seq data
+                 ------------------------------------------------------------- 
+                  Parallel connection | tuba: 8 cores
+                  
+                  Step 2: Filtering and trimming reads
+                  [####################] 100% 0:00:02 | processing reads     
+                  
+                  Step 3: Clustering/Mapping reads within samples
+                  [####################] 100% 0:00:00 | dereplicating          
+                  [####################] 100% 0:00:00 | clustering/mapping     
+                  [####################] 100% 0:00:00 | building clusters      
+                  [####################] 100% 0:00:00 | chunking clusters      
+                  [####################] 100% 0:00:05 | aligning clusters      
+                  [####################] 100% 0:00:00 | concat clusters        
+                  [####################] 100% 0:00:00 | calc cluster stats     
+                  Parallel connection closed.
+
+                Summary stats of Assembly test
+                ------------------------------------------------
+                      state  reads_raw  reads_passed_filter  clusters_total  clusters_hidepth
+                1A_0      3      39724                39724            1000              1000
+                1B_0      3      40086                40086            1000              1000
+                1C_0      3      40272                40272            1000              1000
+                1D_0      3      39932                39932            1000              1000
+                2E_0      3      40034                40034            1000              1000
+                2F_0      3      39866                39866            1000              1000
+                2G_0      3      40060                40060            1000              1000
+                2H_0      3      40398                40396            1000              1000
+                3I_0      3      39770                39770            1000              1000
+                3J_0      3      39644                39644            1000              1000
+                3K_0      3      39930                39930            1000              1000
+                3L_0      3      40016                40016            1000              1000
+
+
+                Full stats files
+                ------------------------------------------------
+                step 1: /tmp/test_fastqs/s1_demultiplex_stats.txt
+                step 2: /tmp/test_edits/s2_rawedit_stats.txt
+                step 3: /tmp/test_clust_0.85/s3_cluster_stats.txt
+                step 4: None
+                step 5: None
+                step 6: None
+                step 7: None
+            </code></pre>
+          </div>
+        </section>        
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">(optional) branching assemblies</h3>
+            <div class="mx-auto"><p>
+              Continue from an intermediate step using two different sets of params.
+            </p></div>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              # create a new branched assembly with name test2
+              ipyrad -p params-test.txt -b test2
+            </code></pre>            
+            <img src="./images/steps_branching.png" style="width:45%">
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Complete an assembly and examine results</h3>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              # run remaining steps of assembly
+              ipyrad -p params-test.txt -s 4567 -r
+
+              # examine outfiles directory
+              ls -l /tmp/test_outfiles/
+            </code></pre>
+
+            <pre class="mx-sm-auto" style="font-size: 1.1rem;"><code class="text" 
+              data-trim style="background-color:#330033"
+              data-line-numbers="|2|3|4-5"
+              >
+              total 3.7M  
+              -rw-rw-r-- 1 deren deren  1.2M Apr  5 01:23 ipsimdata.loci
+              -rw-rw-r-- 1 deren deren  4.3K Apr  5 01:23 ipsimdata_stats.txt
+              -rw-rw-r-- 1 deren deren  1.1M Apr  5 01:23 ipsimdata.seqs.hdf5
+              -rw-rw-r-- 1 deren deren  261K Apr  5 01:23 ipsimdata.snps.hdf5
+              -rw-rw-r-- 1 deren deren   51K Apr  5 01:23 ipsimdata.snps
+              -rw-rw-r-- 1 deren deren  136K Apr  5 01:23 ipsimdata.snpsmap
+              -rw-rw-r-- 1 deren deren 1008K Apr  5 01:23 ipsimdata.phy
+              -rw-rw-r-- 1 deren deren  240K Apr  5 01:23 ipsimdata.vcf.gz
+            </code></pre>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Examine human-readable output (.loci)</h3>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              less /tmp/test_outfiles/test.loci
+            </code></pre>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem;"><code class="text" 
+              data-trim style="background-color:#330033; max-height: 450px;"
+              data-line-numbers="1-13|14-26">
+              1A_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              1B_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              1C_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              1D_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              2E_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              2F_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              2G_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              2H_0     GCTCGAACTTGTACCCTCATTTCGAGCCTATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              3I_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              3J_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              3K_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              3L_0     GCTCGAACTTGTACCCTCATTTCGAGCCGATTTCCCCCTCAAGTAGTAGAGTCTGGAGTACGCACGAGAAAGCTCTAGTATAGGTC
+              //                                   -                                                         |0|
+              1A_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              1B_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              1C_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              1D_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              2E_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAACTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              2F_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAACTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              2G_0     TTTGATCAACATTGTACCTGGAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              2H_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              3I_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              3J_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              3K_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTRGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              3L_0     TTTGATCAACATTGTACCTGCAAGTTCTGCCAAGCTACAAGACGGGGACTAGCCAGGATAGACTATTGAGAACTTATATAAGGGTG
+              //                           -            *                -                                   |1|
+              1A_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCTTGG
+              1B_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCTTGG
+              1C_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCTTGG
+              1D_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCTTGG
+              2E_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCTTGG
+              2F_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCTTGG
+              2G_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCTTGG
+              2H_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCTTGG
+              3I_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCCTGG
+              3J_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCCTGG
+              3K_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCCTGG
+              3L_0     GAAGACCGTCACGTCGGGCCCATCAGCGAGACACGCGCTTCCGAGAACTCCAGGTTCTCGGAGCATTGCCACGGCGAAATTCCTGG
+              //                                                                                         *   |2|
+            </code></pre>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Stats and missing data (empirical example)</h3>
+            <pre class="mx-sm-auto" style="font-size: 1.1rem"><code class="bash" data-trim>
+              less empirical_example_stats.txt
+            </code></pre><pre class="mx-sm-auto" style="font-size: 1.1rem;"><code class="text" 
+              data-trim style="background-color:#330033; max-height: 450px;"
+              data-line-numbers="1-11|14-54|56-96|100-102">
+              ## The number of loci caught by each filter.
+              ## ipyrad API location: [assembly].stats_dfs.s7_filters
+
+                                          total_filters  applied_order  retained_loci
+              total_prefiltered_loci                  0              0         214179
+              filtered_by_rm_duplicates               0              0         214179
+              filtered_by_max_indels                  0              0         214179
+              filtered_by_max_SNPs                  815            815         213364
+              filtered_by_max_shared_het           1102           1085         212279
+              filtered_by_min_sample             121683         121683          90596
+              total_filtered_loci                123600         123583          90596
+
+
+              ## The number of loci recovered for each Sample.
+              ## ipyrad API location: [assembly].stats_dfs.s7_samples
+
+                         sample_coverage
+              reference            90596
+              AR                   46393
+              BJSB3                44785
+              BJSL25               53812
+              BJVL19               51726
+              BZBB1                45170
+              CH                   46349
+              CRL0001              56513
+              CRL0030              51251
+              CUCA4                42047
+              CUMM5                18621
+              CUSV6                44680
+              CUVN10               47235
+              DO                   44946
+              DU                   49388
+              EN                   41028
+              FLAB109              47377
+              FLBA140              51679
+              FLCK18               44462
+              FLCK216              43907
+              FLMO62               47830
+              FLSA185              42941
+              FLSF33               45528
+              FLSF47               46011
+              FLSF54               52158
+              FLWO6                45230
+              HE                   37623
+              HNDA09               48206
+              LALC2                47278
+              MXED8                45771
+              MXGT4                46792
+              MXSA3017             45618
+              NI                   38979
+              SCCU3                38306
+              TXGR3                43897
+              TXMD3                44424
+              TXWV2                24795
+
+              ## The number of loci for which N taxa have data.
+              ## ipyrad API location: [assembly].stats_dfs.s7_loci
+
+                  locus_coverage  sum_coverage
+              1                0             0
+              2                0             0
+              3                0             0
+              4            10673         10673
+              5             7636         18309
+              6             5724         24033
+              7             4305         28338
+              8             3726         32064
+              9             2903         34967
+              10            2388         37355
+              11            2002         39357
+              12            1832         41189
+              13            1564         42753
+              14            1460         44213
+              15            1317         45530
+              16            1178         46708
+              17            1134         47842
+              18            1102         48944
+              19             977         49921
+              20            1041         50962
+              21            1064         52026
+              22             976         53002
+              23             967         53969
+              24             978         54947
+              25            1036         55983
+              26            1078         57061
+              27            1180         58241
+              28            1337         59578
+              29            1483         61061
+              30            1536         62597
+              31            1683         64280
+              32            2063         66343
+              33            2693         69036
+              34            3801         72837
+              35            5716         78553
+              36            7475         86028
+              37            4568         90596
+
+              ... some stats skipped ...
+
+              ## Alignment matrix statistics:
+              snps matrix size: (37, 1182005), 44.61% missing sites.
+              sequence matrix size: (37, 12773423), 48.92% missing sites.
+
+            </code></pre>
+          </div>
+        </section>
+      </section>
+
+
+      <!-- --------------------------- -->
+      <!-- PART IV: ipyrad analysis    -->
+      <!-- --------------------------- -->
+      <section>
+        <section>
+          <div class="standard10 text-center">
+            <h2 id="title">Workshop presentation outline</h2>
+            <br>
+            <ul class="bullets">
+              <li>When and why to use RAD-seq?</li>
+              <li>Viburnum (empirical example)</li>
+              <li>ipyrad assembly (brief) walkthrough</li>
+              <li><span style="font-weight: 600">ipyrad-analysis and ipcoal</span></li>
+              <li>SNPs, gene trees, and phylogenomics</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Downstream analyses</h3>
+            <div class="mx-auto"><p>
+              Common downstream analyses tools for RAD data <br>
+              using either sequence alignments or SNPs.
+            </p></div>
+            <pre class="mx-sm-auto" style="font-size: 1em"><code class="bash" data-trim>
+              STRUCTURE / ADMIXTURE / fastStructure     # SNPs: sensitive to missing, filtering, linkage
+              PCA                                       # SNPs: sensitive to missing, filtering, linkage
+              RAxML / iqtree                            # SEQs: can take very large alignments
+              BEAST / mrbayes / revbayes                # SEQs: can take only small alignments
+              ASTRAL / SNaQ                             # trees: requires trees from many alignments
+              BPP / starBEAST                           # SEQs: can take ~many filtered alignments
+              ABBA-BABA                                 # SNPs: ~sensitive to linkage; requires many SNPs
+              SVDQuartets / tetrad                      # SNPs: not sensitive to missing; requires many SNPs 
+              vcftools / bcftools / other popgen        # SNPs: sensitive to missing, filtering, linkage
+            </code></pre>
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <h3 id="title">Different tools take different inputs</h3>
+            <br>
+            <div class="mx-auto"><p>
+              Filtering for sample coverage, population coverage, minor allele 
+              frequency, and other criteria for each tool, and then ALSO converting
+              to the appropriate data formats. 
+            </p></div>
+            <br>
+            <div class="mx-auto"><p>
+              The need to keep track of many separate compiled and filtered 
+              datasets, and to remember which was used for which analysis 
+              becomes confusing, and hinders reproducibility.
+            </p></div>            
+          </div>
+        </section>
+
+        <section class="future">        
+          <div class="standard10">
+            <!-- <h3 id="title">Different tools take different inputs</h3> -->
+            <div class="mx-auto"><p>
+              The <code>ipyrad.analysis</code> Python API allows 
+              reproducible downstream <br>analyses from a single ipyrad Assembly output.
+            </p></div>
+            <br>
+            <pre class="mx-sm-auto" style="font-size: 1rem"><code class="Python" data-trim>
+              # interactive Python code run in a jupyter notebook
+              import ipyrad.analysis as ipa
+
+              # modules to filter data, parallelize replicate analyses, and summarize
+              ipa.structure(...)
+              ipa.raxml(...)
+              ipa.astral(...)
+              ipa.bpp(...)
+              ipa.baba(...)
+              ipa.tetrad(...)
+              ipa.window_extracter(...)
+              ipa.tree_slider(...)
+              ...
+            </code></pre>
+          </div>
+        </section>
+
+
+        <section class="future">        
+          <div class="standard10">
+            <div class="mx-auto"><p>
+              Each tool follows a similar syntax, verbosely prints filtering,
+              writes formatted data files, parallelizes analysis, and often
+              includes plotting tools for use within jupyter.
+            </p></div>
+
+            <pre class="mx-sm-auto" style="font-size: 1rem"><code class="Python" data-trim data-line-numbers="|2|3|4-7|10-11">
+              # init a tool with filtering options
+              tool = ipa.pca(
+                  data="/tmp/assembly.snps.hdf5",
+                  mincov=0.75,
+                  imap={"A": ["A1", "A2", "A3"], "B": ["B1", "B2", "B3"]},
+                  minmap={"A": 2, "B": 2},
+                  minmaf=0.05,
+              )
+
+              # run 20 replicate analyses sampling different random unlinked SNPs
+              tool.run(nreplicates=25, seed=123)
+
+              # return a plotted result
+              ...
+            </code></pre>
+          </div>
+        </section>
+
+        <section class="future">
+          <div class="mx-auto"><p>
+            Jupyter notebook example: treemix
+          </p></div>          
+            <iframe data-src="https://nbviewer.org/github/dereneaton/ipyrad/blob/master/newdocs/API-analysis/cookbook-treemix.ipynb" data-preload style="width:90%; height:750px">
+            </iframe>
+        </section>
+
+        <section class="future">
+          <div class="mx-auto"><p>
+            Extracting or binning alignments
+          </p></div>          
+            <pre class="mx-sm-auto" style="font-size: 1rem"><code class="Python" data-trim data-line-numbers="|1-5|6-7">
+              tool = ipa.window_extracter(
+                  data="/tmp/assembly.seqs.hdf5",
+                  scaffold_idx=0,
+                  start=0,
+                  end=1_000_000,
+                  mincov=4
+                  minmaf=0.05,
+              )
+              tool.run()
+            </code></pre>
+            <img src="./images/window-extracter-min4.svg" style="width:80%; background-color: white;">
+        </section>
+
+        <section class="future">
+          <div class="mx-auto"><p>
+            Extracting or binning ref-alignments
+          </p></div>          
+            <pre class="mx-sm-auto" style="font-size: 1rem"><code class="Python" data-line-numbers="6" data-trim >
+              tool = ipa.window_extracter(
+                  data="/tmp/assembly.seqs.hdf5",
+                  scaffold_idx=0,
+                  start=0,
+                  end=1_000_000,
+                  mincov=8
+                  minmaf=0.05,
+              )
+              tool.run()
+            </code></pre>
+            <img src="./images/window-extracter-min8.svg" style="width:80%; background-color: white;">
+        </section>
+
+        <section class="future" data-background-color="white">
+          <div class="title"><p  style="color:black">
+            Gene tree inference near herbicide resistance genes in <i>Amaranthus</i></p>
+            <img src="./images/Amaranth-windows.svg" style="width:80%; background-color: white;">
+          </div>
+        </section>
+
+        <section class="future">
+          <div class="mx-auto"><p>
+            Complex operations: gene tree and species tree inference
+          </p></div>
+          <br>
+            <pre class="mx-sm-auto" style="font-size: 1rem"><code class="Python" data-line-numbers="1-13|15-16|18-19|21-23" data-trim >
+              # parallelize sliding window filtering and gene tree inference
+              ts = ipa.treeslider(
+                  data="/home/deren/Downloads/ref_pop2.seqs.hdf5",
+                  scaffold_idxs=2,
+                  window_size=250000,
+                  slide_size=250000,
+                  inference_method="raxml",
+                  inference_args={"N": 100, "T": 4},
+                  minsnps=10,
+                  mincov=5,
+                  consensus_reduce=True,
+                  imap=imap,
+              )
+
+              # run jobs in parallel
+              ts.run(cores=8)
+
+              # collect tree newick strings from table
+              trees = ts.tree_table.tree.tolist()
+
+              # run ASTRAL on collection of trees
+              ast = ipa.astral(data=trees, gene_resampling=False, nboots=100)
+              ast.run()
+            </code></pre>
+        </section>
+      </section>
+
+
+    <!-- LINKS TO EXERCISES/BINDER -->
+
+
+    <!-- ACKNOWLEDGEMENTS -->
+
+
+    <!-- SLIDES CLASS ENDING -->
+    </div>
+
+  <!-- REVEAL LINEAR CENTER CLASS ENDING -->
+  </div>
+
+
+  <!-- JAVASCRIPT -->
+  <script src="./assets/reveal.js/dist/reveal.js"></script>        
+  <script src="./assets/reveal.js/plugin/markdown/markdown.js"></script>  
+  <script src="./assets/reveal.js/plugin/highlight/highlight.js"></script>
+  <script>
+    Reveal.initialize({
+      plugins: [ RevealMarkdown, RevealHighlight ],
+      minScale:0.1,
+      maxScale:5,
+      width:1600,
+      height:900,
+      controls:true, 
+      progress:true,
+      hash:true,
+      loop:false, 
+      center:false,
+      transition: 'none',
+      // transition: 'none',      
+    });
+  </script>
+</body>
+</html>
