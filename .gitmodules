@@ -1,6 +1,9 @@
 [submodule "assets/vendor/reveal.js"]
-	path = assets/vendor/reveal.js
+	path = docs/assets/vendor/reveal.js
 	url = https://github.com/hakimel/reveal.js/
 [submodule "docs/docs/reveal/reveal.js"]
 	path = docs/docs/reveal/reveal.js
 	url = https://github.com/hakimel/reveal.js/
+[submodule "docs/assets/reveal.js"]
+	path = docs/assets/reveal.js
+	url = https://github.com/hakimel/reveal.js
