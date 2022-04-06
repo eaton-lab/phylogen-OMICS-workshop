@@ -2,6 +2,7 @@ name: ipyrad
 channels: 
   - conda-forge
   - bioconda
+  - eaton-lab
 dependencies:
   - python>=3.7
   - ipython
@@ -26,3 +27,14 @@ dependencies:
   - bwa
   - samtools
   - zlib
+
+  - raxml
+  - openjdk
+
+  - pip
+  - pip:
+    - git+https://github.com/dereneaton/ipyrad.git@rejson#egg=ipyrad
+    - git+https://github.com/eaton-lab/toytree.git@toy3#egg=toytree
+    - git+https://github.com/eaton-lab/ipcoal.git@toy3#egg=ipcoal
+
+
